@@ -2,6 +2,12 @@
 Demonstration of using saltstack and terraform with cloud service
 
 Setting up your environment for using terraform with oci
+Install terraform:  brew install terraform
+Install OCI provider:  https://docs.cloud.oracle.com/iaas/Content/API/SDKDocs/terraformgetstarted.htm?tocpath=Developer%20Tools%20%7CTerraform%20Provider%7C_____1
+https://github.com/oracle/terraform-provider-oci/releases
+Note:  OSX provider is the Darwin provider
+untar the file then copy it to ~/.terraform.d/plugins
+
 
 Create a file for the api credentials: ~/terraform_oci
 
