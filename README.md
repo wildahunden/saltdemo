@@ -36,15 +36,19 @@ You will need to create export a number of variables which terraform will use to
 created a file for the api credentials: ~/terraform_oci
 
 export TF_VAR_tenancy_ocid="<tenancy ocid>"
+
 export TF_VAR_user_ocid="<username>"
+
 export TF_VAR_fingerprint="<privateKeyFingerpring>"
+
 export TF_VAR_private_key_path="<pathToPrivateKey>
+
 export TF_VAR_compartment_ocid="<compartment OCID>"
+
 export TF_VAR_region="<regionName>"
 
 The OCID values are avaible in the OCI console.  You'll need to generate the key files using these instructions:
 https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm
-
 
 ## Running Tests
 cd to the oci directory in this repo
