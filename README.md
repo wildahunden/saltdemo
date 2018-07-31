@@ -56,10 +56,16 @@ source ~/terraform_oci
 
 ## Running Tests
 cd to the oci directory in this repo
+
+source ~/terraform_oci
+
 terraform init
-terraform plan
-terraform apply
-terraform destroy
+
+terraform plan       # See what it thinks it needs to do.
+
+terraform apply      # Apply the changes
+
+terraform destroy    # To save money, destroy the resources on oci until you come back next time.
 
 ## Deployment
 
