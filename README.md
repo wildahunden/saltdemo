@@ -71,7 +71,9 @@ terraform destroy    # To save money, destroy the resources on oci until you com
 
 ## Built With
 Homebrew - https://brew.sh/
+
 OCI - http://cloud.oracle.com/tryit
+
 Terraform - https://terraform.io
 
 ## Author
