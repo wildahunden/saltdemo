@@ -19,6 +19,7 @@ http://cloud.oracle.com/tryit
 #### Install Terraform on your workstation (assumes mac workstation)
 
 brew install terraform
+
 terraform --version
 
 #### Install the OCI terraform provider
