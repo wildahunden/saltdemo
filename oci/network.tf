@@ -28,14 +28,29 @@ resource "oci_core_internet_gateway" "saltdemo-IGW" {
   vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
 }
 
-resource "oci_core_route_table" "saltdemoLB-RT" {
+resource "oci_core_route_table" "saltdemo-lb-RT" {
   compartment_id = "${var.compartment_ocid}"
   vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
-  display_name   = "saltdemoLB-RT"
+  display_name   = "saltdemo-lb-RT"
 
   route_rules {
-    cidr_block        = "0.0.0.0/0"
+    destination        = "0.0.0.0/0"
     network_entity_id = "${oci_core_internet_gateway.saltdemo-IGW.id}"
+  }
+}
+
+resource "oci_core_security_list" "saltdemo-lb-LIST" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
+  
+  ingress_security_rules {
+    source = "0.0.0.0/0"
+    protocol = 6
+    stateless = false
+    tcp_options {
+      "min" = 80
+      "max" = 80
+    }
   }
 }
 
