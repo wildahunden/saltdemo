@@ -16,7 +16,7 @@ You can sign up for an account with 30 days to use $300 credit they give you.
 
 http://cloud.oracle.com/tryit
 
-#### Install Terraform on your workstation (assumes mac workstation)
+#### Install Terraform on your workstation (assumes mac workstation with homebrew)
 
 brew install terraform
 
