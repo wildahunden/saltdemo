@@ -54,3 +54,22 @@ resource "oci_core_security_list" "saltdemo-lb-LIST" {
   }
 }
 
+resource "oci_core_subnet" "saltdemo-subnet-lb1" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
+  "availability_domain" = "aNUQ:US-ASHBURN-AD-2"
+  "cidr_block"   = "10.0.2.0/24"
+  "route_table_id"      = "${oci_core_route_table.saltdemo-lb-RT.id}"
+  "security_list_ids"   = ["${oci_core_security_list.saltdemo-lb-LIST.id}"]
+}
+
+resource "oci_core_subnet" "saltdemo-subnet-lb2" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
+  "availability_domain" = "aNUQ:US-ASHBURN-AD-2"
+  "cidr_block"   = "10.0.3.0/24"
+  "route_table_id"      = "${oci_core_route_table.saltdemo-lb-RT.id}"
+  "security_list_ids"   = ["${oci_core_security_list.saltdemo-lb-LIST.id}"]
+}
+
+
