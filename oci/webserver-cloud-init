@@ -1,0 +1,15 @@
+#cloud-config
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
+packages:
+ - httpd
+runcmd:
+ - [ sh, -xc, "systemctl enable httpd.service" ]
+ - [ sh, -xc, "systemctl start httpd.service" ]
+ - [ sh, -xc, "echo '<html><head></head><body><pre><code>' > /var/www/html/index.html" ]
+ - [ sh, -xc, "hostname >> /var/www/html/index.html" ]
+ - [ sh, -xc, "echo '' >> /var/www/html/index.html" ]
+ - [ sh, -xc, "cat /etc/os-release >> /var/www/html/index.html" ]
+ - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
+ - [ sh, -xc, "firewall-offline-cmd --add-service=http" ]
+ - [ sh, -xc, "systemctl enable  firewalld" ]
+ - [ sh, -xc, "systemctl restart  firewalld" ]
