@@ -13,7 +13,9 @@ resource "oci_core_subnet" "saltdemo-subnet-ws1" {
   vcn_id                = "${oci_core_virtual_network.saltdemo-VCN.id}"
   "availability_domain" = "aNUQ:US-ASHBURN-AD-1"
   "cidr_block"          = "10.0.0.0/24"
+  "route_table_id"      = "${oci_core_route_table.saltdemo-ws-RT.id}"
   dns_label             = "saltdemosnws1"
+  display_name          = "saltdemo-subnet-ws1"
 }
 
 resource "oci_core_subnet" "saltdemo-subnet-ws2" {
@@ -21,7 +23,9 @@ resource "oci_core_subnet" "saltdemo-subnet-ws2" {
   vcn_id                = "${oci_core_virtual_network.saltdemo-VCN.id}"
   "availability_domain" = "aNUQ:US-ASHBURN-AD-2"
   "cidr_block"          = "10.0.1.0/24"
+  "route_table_id"      = "${oci_core_route_table.saltdemo-ws-RT.id}"
   dns_label             = "saltdemosnws2"
+  display_name          = "saltdemo-subnet-ws2"
 }
 
 resource "oci_core_internet_gateway" "saltdemo-IGW" {
@@ -41,29 +45,67 @@ resource "oci_core_route_table" "saltdemo-lb-RT" {
   }
 }
 
+#this is necessary to allow ssh traffic to the web servers
+resource "oci_core_route_table" "saltdemo-ws-RT" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
+  display_name   = "saltdemo-lb-RT"
+
+  route_rules {
+    destination        = "0.0.0.0/0"
+    network_entity_id = "${oci_core_internet_gateway.saltdemo-IGW.id}"
+  }
+}
+
 resource "oci_core_security_list" "saltdemo-lb-LIST" {
   compartment_id = "${var.compartment_ocid}"
   vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
   
-  ingress_security_rules {
-    source = "0.0.0.0/0"
-    protocol = 6
-    stateless = false
-    tcp_options {
-      "min" = 80
-      "max" = 80
+  egress_security_rules = [{
+    protocol    = "all"
+    destination = "0.0.0.0/0"
+  }]
+
+  ingress_security_rules = [
+    {
+      source = "0.0.0.0/0"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 22
+        "max" = 22
+      }
+    },
+    {
+      source = "0.0.0.0/0"
+      protocol = 6
+      stateless = true
+      tcp_options {
+        "min" = 80
+        "max" = 80
+      }
+    },
+    {
+      source = "0.0.0.0/0"
+      protocol = 6
+      stateless = true
+      tcp_options {
+        "min" = 443
+        "max" = 443
+      }
     }
-  }
+  ]
 }
 
 resource "oci_core_subnet" "saltdemo-subnet-lb1" {
   compartment_id = "${var.compartment_ocid}"
   vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
-  "availability_domain" = "aNUQ:US-ASHBURN-AD-2"
+  "availability_domain" = "aNUQ:US-ASHBURN-AD-1"
   "cidr_block"   = "10.0.2.0/24"
   "route_table_id"      = "${oci_core_route_table.saltdemo-lb-RT.id}"
   "security_list_ids"   = ["${oci_core_security_list.saltdemo-lb-LIST.id}"]
   dns_label             = "saltdemosnlb1"
+  display_name          = "saltdemo-subnet-lb1"
 }
 
 resource "oci_core_subnet" "saltdemo-subnet-lb2" {
@@ -74,6 +116,7 @@ resource "oci_core_subnet" "saltdemo-subnet-lb2" {
   "route_table_id"      = "${oci_core_route_table.saltdemo-lb-RT.id}"
   "security_list_ids"   = ["${oci_core_security_list.saltdemo-lb-LIST.id}"]
   dns_label             = "saltdemosnlb2"
+  display_name          = "saltdemo-subnet-lb2"
 }
 
 
