@@ -1,6 +1,6 @@
 #Create the instances & load balancers needed for the application
 variable "user-data1" {
-  default = <<EOF
+default = <<EOF
 #!/bin/bash -x
 echo '################### webserver userdata begins #####################'
 touch ~opc/userdata.`date +%s`.start
@@ -23,29 +23,29 @@ echo '################### webserver userdata ends #######################'
 EOF
 }
 
-  variable "user-data2" {
-      default = <<EOF
-    #!/bin/bash -x
-    echo '################### webserver userdata begins #####################'
-    touch ~opc/userdata.`date +%s`.start
-    # echo '########## yum update all ###############'
-    # yum update -y
-    echo '########## basic webserver ##############'
-    yum install -y httpd
-    systemctl enable  httpd.service
-    systemctl start  httpd.service
-    echo '<html><head></head><body><pre><code>' > /var/www/html/index.html
-    hostname >> /var/www/html/index.html
-    echo 'webserver2' >> /var/www/html/index.html
-    cat /etc/os-release >> /var/www/html/index.html
-    echo '</code></pre></body></html>' >> /var/www/html/index.html
-    firewall-offline-cmd --add-service=http
-    systemctl enable  firewalld
-    systemctl restart  firewalld
-    touch ~opc/userdata.`date +%s`.finish
-    echo '################### webserver userdata ends #######################'
-    EOF
-  }
+variable "user-data2" {
+  default = <<EOF
+  #!/bin/bash -x
+  echo '################### webserver userdata begins #####################'
+  touch ~opc/userdata.`date +%s`.start
+  # echo '########## yum update all ###############'
+  # yum update -y
+  echo '########## basic webserver ##############'
+  yum install -y httpd
+  systemctl enable  httpd.service
+  systemctl start  httpd.service
+  echo '<html><head></head><body><pre><code>' > /var/www/html/index.html
+  hostname >> /var/www/html/index.html
+  echo 'webserver2' >> /var/www/html/index.html
+  cat /etc/os-release >> /var/www/html/index.html
+  echo '</code></pre></body></html>' >> /var/www/html/index.html
+  firewall-offline-cmd --add-service=http
+  systemctl enable  firewalld
+  systemctl restart  firewalld
+  touch ~opc/userdata.`date +%s`.finish
+  echo '################### webserver userdata ends #######################'
+  EOF
+}
 
 resource "oci_core_instance" "saltdemo-ws1" {
   count                 = "1"
@@ -65,7 +65,7 @@ resource "oci_core_instance" "saltdemo-ws1" {
   },
   metadata {
     ssh_authorized_keys = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4tJPnV15IvVHywFglq7i5yFEhVUmXqS8Cb7nw+nNO/vHrl6rekw3+jTCi1kmjOYC5YWzfbdl3Brcxcu3hn7Az+TCLBzxVDLu3327iUkw08bDzQITnvHnQqPS94HQxNbsfPX8vACKXbK/4OvMw9VlMz7zsG9R6JcO8KvCO7L2zUxN/mZHMr6jPzUt4oAS2DWsTGqPqqRi/Vl4Plpus1CWFGjQk68Rsu1lR4eHwdDOJCWl8DDMKTkilRdHydEu1P9zpNYJDaoiwJ+sQs8uAZe+6QZpP/4asyagZ53a5woiT5+sxZ+7Cqv+IwUQOh4f6yO2JFJtPG4iUm6zBsVdjbMPl wildahunden@Daniels-MacBook-Pro-2.local"
-    user_data = "${base64encode(var.user-data1)}"
+    user_data = "${base64encode(file("./mybootscript.sh"))}"
   }
 }
 
@@ -87,7 +87,7 @@ resource "oci_core_instance" "saltdemo-ws2" {
   },
   metadata {
     ssh_authorized_keys = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4tJPnV15IvVHywFglq7i5yFEhVUmXqS8Cb7nw+nNO/vHrl6rekw3+jTCi1kmjOYC5YWzfbdl3Brcxcu3hn7Az+TCLBzxVDLu3327iUkw08bDzQITnvHnQqPS94HQxNbsfPX8vACKXbK/4OvMw9VlMz7zsG9R6JcO8KvCO7L2zUxN/mZHMr6jPzUt4oAS2DWsTGqPqqRi/Vl4Plpus1CWFGjQk68Rsu1lR4eHwdDOJCWl8DDMKTkilRdHydEu1P9zpNYJDaoiwJ+sQs8uAZe+6QZpP/4asyagZ53a5woiT5+sxZ+7Cqv+IwUQOh4f6yO2JFJtPG4iUm6zBsVdjbMPl wildahunden@Daniels-MacBook-Pro-2.local"
-    user_data = "${base64encode(var.user-data2)}"
+    user_data = "${base64encode(file("./mybootscript.sh"))}"
   }
 }
 
@@ -114,7 +114,7 @@ resource "oci_core_instance" "saltdemo-salt1" {
 
 resource "oci_load_balancer" "saltdemo-lb1" {
   compartment_id = "${var.compartment_ocid}"
-  display_name   = "lb1"
+  display_name   = "saltdemo-lb1"
   shape          = "100Mbps"
   subnet_ids     = [
     "${oci_core_subnet.saltdemo-subnet-lb1.id}", 
@@ -188,13 +188,13 @@ resource "oci_load_balancer_backend" "saltdemo-lb-be1" {
   weight           = 1
 }
 
-
-output "saltdemo-ws1" {
-  value = "${oci_core_instance.saltdemo-ws1.public_ip}"
-}
-output "saltdemo-ws2" {
-  value = "${oci_core_instance.saltdemo-ws2.public_ip}"
-}
-output "saltdemo-salt1" {
-  value = "${oci_core_instance.saltdemo-salt1.public_ip}"
+resource "oci_load_balancer_backend" "saltdemo-lb-be2" {
+  load_balancer_id = "${oci_load_balancer.saltdemo-lb1.id}"
+  backendset_name  = "${oci_load_balancer_backend_set.saltdemo-lb-bes1.id}"
+  ip_address       = "${oci_core_instance.saltdemo-ws2.private_ip}"
+  port             = 80
+  backup           = false
+  drain            = false
+  offline          = false
+  weight           = 1
 }
