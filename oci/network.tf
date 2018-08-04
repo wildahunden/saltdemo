@@ -14,6 +14,7 @@ resource "oci_core_subnet" "saltdemo-subnet-ws1" {
   "availability_domain" = "aNUQ:US-ASHBURN-AD-1"
   "cidr_block"          = "10.0.0.0/24"
   "route_table_id"      = "${oci_core_route_table.saltdemo-ws-RT.id}"
+  security_list_ids     = ["${oci_core_security_list.saltdemo-ws-LIST.id}"]
   dns_label             = "saltdemosnws1"
   display_name          = "saltdemo-subnet-ws1"
 }
@@ -24,6 +25,7 @@ resource "oci_core_subnet" "saltdemo-subnet-ws2" {
   "availability_domain" = "aNUQ:US-ASHBURN-AD-2"
   "cidr_block"          = "10.0.1.0/24"
   "route_table_id"      = "${oci_core_route_table.saltdemo-ws-RT.id}"
+  security_list_ids     = ["${oci_core_security_list.saltdemo-ws-LIST.id}"]
   dns_label             = "saltdemosnws2"
   display_name          = "saltdemo-subnet-ws2"
 }
@@ -57,16 +59,19 @@ resource "oci_core_route_table" "saltdemo-ws-RT" {
   }
 }
 
-resource "oci_core_security_list" "saltdemo-lb-LIST" {
+resource "oci_core_security_list" "saltdemo-ws-LIST" {
   compartment_id = "${var.compartment_ocid}"
   vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
-  
-  egress_security_rules = [{
-    protocol    = "all"
-    destination = "0.0.0.0/0"
-  }]
+  display_name   = "saltdemo-ws-LIST"
 
+  egress_security_rules = [
+    {
+      destination = "0.0.0.0/0"
+      protocol    = "6"
+    }
+  ],
   ingress_security_rules = [
+    #The security list for the webservers needs to allow traffice from the load balancer subnets
     {
       source = "0.0.0.0/0"
       protocol = 6
@@ -78,23 +83,98 @@ resource "oci_core_security_list" "saltdemo-lb-LIST" {
     },
     {
       source = "0.0.0.0/0"
+      protocol = 1
+      icmp_options {
+        "type" = 3
+        "code" = 4
+      }
+    },
+    {
+      source = "10.0.0.0/16"
+      protocol = 1
+      icmp_options {
+        "type" = 3
+      }
+    },
+    {
+      source = "10.0.2.0/24"
       protocol = 6
-      stateless = true
       tcp_options {
         "min" = 80
         "max" = 80
       }
     },
+
     {
-      source = "0.0.0.0/0"
+      source = "10.0.3.0/24"
       protocol = 6
-      stateless = true
       tcp_options {
-        "min" = 443
-        "max" = 443
+        "min" = 80
+        "max" = 80
       }
     }
   ]
+}
+
+resource "oci_core_security_list" "saltdemo-lb-LIST" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.saltdemo-VCN.id}"
+  display_name   = "saltdemo-lb-LIST"
+  
+  egress_security_rules = [
+    {
+      protocol    = "6"
+      destination = "10.0.0.0/24"
+      tcp_options {
+        min = "80"
+        max = "80"
+      } 
+    },
+    {
+      protocol    = "6"
+      destination = "10.0.1.0/24"
+      tcp_options {
+        min = "80"
+        max = "80"
+      } 
+    }
+  ]
+
+  ingress_security_rules = [
+    #The security list for the webservers needs to allow traffice from the load balancer subnets
+    {
+      source = "0.0.0.0/0"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 22
+        "max" = 22
+      }
+    },
+    {
+      source = "0.0.0.0/0"
+      protocol = 1
+      icmp_options {
+        "type" = 3
+        "code" = 4
+      }
+    },
+    {
+      source = "10.0.0.0/16"
+      protocol = 1
+      icmp_options {
+        "type" = 3
+      }
+    },
+    {
+      source = "0.0.0.0/0"
+      protocol = 6
+      tcp_options {
+       max = "80"
+       min = "80"
+      }
+    }
+    ]
 }
 
 resource "oci_core_subnet" "saltdemo-subnet-lb1" {
