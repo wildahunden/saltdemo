@@ -21,7 +21,6 @@ packages:
  - salt-doc
 runcmd:
  - [ sh, -xc, "systemctl enable salt-master.service" ]
- - [ sh, -xc, "systemctl start salt-master.service" ]
  - [ sh, -xc, "systemctl disable firewalld.service" ]
  - [ sh, -xc, "systemctl stop firewalld.service" ]
  - [ sh, -xc, "firewall-offline-cmd --permanent --add-port=80/tcp" ]
@@ -34,3 +33,5 @@ runcmd:
  - [ sh, -xc, "cat /etc/os-release >> /var/www/html/index.html" ]
  - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
  - [ sh, -xc, "git clone https://github.com/wildahunden/saltdemo.git /opt/saltdemo" ]
+ - [ sh, -xc, "cp -R /opt/saltdemo/salt-code/salt/* /srv" ]
+ - [ sh, -xc, "systemctl start salt-master.service" ]
