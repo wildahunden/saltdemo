@@ -17,6 +17,8 @@ packages:
  - wget
  - unzip
  - salt-master
+ - salt-cloud
+ - salt-doc
 runcmd:
  - [ sh, -xc, "systemctl enable salt-master.service" ]
  - [ sh, -xc, "systemctl start salt-master.service" ]
