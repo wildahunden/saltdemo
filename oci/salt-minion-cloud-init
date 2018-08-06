@@ -1,5 +1,12 @@
 #cloud-config
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
+yum_repos:
+  saltstack:
+    name:      SaltStack repo for Red Hat Enterprise Linux $releasever
+    baseurl:   https://repo.saltstack.com/yum/redhat/$releasever/$basearch/latest
+    enabled:   1
+    gpgcheck:  true
+    gpgkey:    https://repo.saltstack.com/yum/redhat/$releasever/$basearch/latest/SALTSTACK-GPG-KEY.pub
 packages:
  - httpd
  - figlet
@@ -9,7 +16,10 @@ packages:
  - tmux
  - wget
  - unzip
+ - salt-minion
 runcmd:
+ - [ sh, -xc, "systemctl enable salt-minion.service" ]
+ - [ sh, -xc, "systemctl start salt-minion.service" ]
  - [ sh, -xc, "systemctl disable firewalld.service" ]
  - [ sh, -xc, "systemctl stop firewalld.service" ]
  - [ sh, -xc, "firewall-offline-cmd --permanent --add-port=80/tcp" ]

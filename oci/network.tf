@@ -123,6 +123,10 @@ resource "oci_core_security_list" "saltdemo-lb-LIST" {
   
   egress_security_rules = [
     {
+      destination = "0.0.0.0/0"
+      protocol    = "6"
+    },
+    {
       protocol    = "6"
       destination = "10.0.0.0/24"
       tcp_options {
