@@ -1,5 +1,5 @@
 common-tools: 
-  pkg:installed: 
+  pkg.installed: 
     - pkgs: 
       - vim
       - curl
