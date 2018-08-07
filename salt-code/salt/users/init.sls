@@ -4,5 +4,5 @@ users_calcbrain_users:
     - home:  /home/calcbrain
     - shell: /bin/bash
     - groups:
-      - sudo
+      - wheel
       - adm
