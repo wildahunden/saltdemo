@@ -145,6 +145,25 @@ resource "oci_core_security_list" "saltdemo-lb-LIST" {
   ]
 
   ingress_security_rules = [
+    #The security list for the load balancers need to allow traffic on 4505-4506 to allow salt to work
+    {
+      source = "10.0.2.0/24"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 4505
+        "max" = 4506
+      }
+    },
+    {
+      source = "10.0.3.0/24"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 4505
+        "max" = 4506
+      }
+    },
     #The security list for the webservers needs to allow traffice from the load balancer subnets
     {
       source = "0.0.0.0/0"

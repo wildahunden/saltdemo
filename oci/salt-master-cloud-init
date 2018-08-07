@@ -19,6 +19,7 @@ packages:
  - salt-master
  - salt-cloud
  - salt-doc
+ - nmap
 runcmd:
  - [ sh, -xc, "systemctl enable salt-master.service" ]
  - [ sh, -xc, "systemctl disable firewalld.service" ]
@@ -34,4 +35,6 @@ runcmd:
  - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
  - [ sh, -xc, "git clone https://github.com/wildahunden/saltdemo.git /opt/saltdemo" ]
  - [ sh, -xc, "cp -R /opt/saltdemo/salt-code/salt/* /srv" ]
+ - [ sh, -xc, "cp -R /opt/saltdemo/salt-code/master /etc/salt/master" ]
+ - [ sh, -xc, "sed -i -e \"s/#interface: 0.0.0.0/interface: $(hostname -i)/\" /etc/salt/master" ]
  - [ sh, -xc, "systemctl start salt-master.service" ]

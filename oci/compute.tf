@@ -71,6 +71,7 @@ resource "oci_core_instance" "saltdemo-salt-minion01" {
   compartment_id        = "${var.compartment_ocid}"
   display_name          = "saltminion01"
   shape                 = "VM.Standard1.2"
+  depends_on            = ["oci_core_instance.saltdemo-saltmaster"]
   create_vnic_details {
     subnet_id = "${oci_core_subnet.saltdemo-subnet-lb1.id}"
     display_name = "primaryvnic"
@@ -93,6 +94,7 @@ resource "oci_core_instance" "saltdemo-salt-minion02" {
   compartment_id        = "${var.compartment_ocid}"
   display_name          = "saltminion02"
   shape                 = "VM.Standard1.2"
+  depends_on            = ["oci_core_instance.saltdemo-saltmaster"]
   create_vnic_details {
     subnet_id = "${oci_core_subnet.saltdemo-subnet-lb2.id}"
     display_name = "primaryvnic"
