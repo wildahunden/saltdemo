@@ -89,10 +89,10 @@ of bringing this site up.
 You will need to manually create a compartment in OCI and update the credentials file (e.g., ~/.terraform_oci) with the ocid.
 You will also need to create a user and add a public key to the user.  That user will be used by terraform to provision 
 resources.  Once you have the credentials setup and the compartment, you can do the following to bring the site up.
-cd ./oci
-source ~/.terraform_oci  #export shell variables terraform will use
-terraform init
-terraform apply          #this will take 10-20 minutes.  Once all the instances come up, the load balancer needs to detect back end servers.
+* cd ./oci
+* source ~/.terraform_oci  #export shell variables terraform will use
+* terraform init
+* terraform apply          #this will take 10-20 minutes.  Once all the instances come up, the load balancer needs to detect back end servers.
 You will see a list of server names and IP addresses.  These are the servers you will need to work with.
 
 ## Built With
@@ -109,9 +109,9 @@ Daniel Williams
 See LICENSE.md
 
 ## Acnowledgments
-Arnes Tech Stuff -- http://arnes-stuff.blogspot.com/2017/11/oracle-cloud-infrastructure-and.html
-Udemy OCI Architect Course:  https://www.udemy.com/oracle-cloud-infrastructure-associate-arch-part-i-1z0-932/learn/v4/
-Udemy Salt Stack Course:  https://www.udemy.com/mastering-saltstack-from-ground-to-cloud/learn/v4/
+* Arnes Tech Stuff -- http://arnes-stuff.blogspot.com/2017/11/oracle-cloud-infrastructure-and.html
+* Udemy OCI Architect Course:  https://www.udemy.com/oracle-cloud-infrastructure-associate-arch-part-i-1z0-932/learn/v4/
+* Udemy Salt Stack Course:  https://www.udemy.com/mastering-saltstack-from-ground-to-cloud/learn/v4/
 
 
 
