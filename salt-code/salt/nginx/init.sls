@@ -2,9 +2,9 @@ nginx:
   pkg.installed:
     - name: nginx
 
-nginx-extras:
-  pkg.installed:
-    - name: nginx-extras
+#nginx-extras:
+#  pkg.installed:
+#    - name: nginx-extras
 
 nginx.conf:
   file.managed:
