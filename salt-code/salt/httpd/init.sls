@@ -17,8 +17,5 @@ httpd:
 "cat /etc/os-release >> /var/www/html/index.html":
   cmd.run
 
-'echo DKW >> /var/www/html/index.html':
-  cmd.run
-
 "echo '</code></pre></body></html>' >> /var/www/html/index.html":
   cmd.run
