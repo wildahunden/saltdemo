@@ -97,13 +97,15 @@ resources.  Once you have the credentials setup and the compartment, you can do 
 
 [Screen shot of successful terraform apply](https://github.com/wildahunden/saltdemo/blob/master/screenShots/ScreenShot1-TerraformApply.png)
 
-You will see a list of server names and IP addresses displayed when the provisioning is complete.  At this point, this is a
+You will see a list of server names and IP addresses displayed when the provisioning is complete.  The IP addresses 
+displayed includes "site_public_ipaddress" which is the public address for the site.  Put that IP address in
+the address of your favorite browser to see the web page which displays, "Default Apache index.html." This is a
 fully-functional, load-balanced web site running apache in Oracle Cloud Infrastructure (OCI).  The web site page is a place-
 holder.
 
-The IP addresses displayed includes "site_public_ipaddress" which is the public address for the site.  Put that IP address in
-the address of your favorite browser to see the web page which displays, "Default Apache index.html."  The next 
-step is to deploy the web page with salt stack.
+[Scrteen shot of placeholder web page](https://github.com/wildahunden/saltdemo/blob/master/screenShots/ScreenShot2-DefaultWebsite.png)
+
+The next step is to deploy a better web page with salt stack.
 
 ### Salt Stack Deployment
 While all of the salt servers have been provisioned and salt-minion has been installed on the web servers, there are still 
@@ -121,6 +123,10 @@ a couple of manual steps that need to be completed.
 * #If that completed okay, run it again w/o the "test=True" to actually apply the changes.
 * #If that completed okay, you can refresh your browser to see the new page with displays the webserver name & info.
 * #Notice that the webserver changes names when you refresh the page indicating that the load balancer is working.
+
+[Screen shot of improved web page #1](https://github.com/wildahunden/saltdemo/blob/master/screenShots/ScreenShot3-AfterSaltDeploly.png)
+
+[Screen shot of improved web page #2](https://github.com/wildahunden/saltdemo/blob/master/screenShots/ScreenShot4-AfterSaltDeploy-SecondWebServerResponds.png)
 
 * Debugging
 * ## If you destroy and re-provision with terraform, you'll need to clean up the keys
