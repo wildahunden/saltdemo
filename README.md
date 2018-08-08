@@ -95,6 +95,8 @@ resources.  Once you have the credentials setup and the compartment, you can do 
 * terraform init
 * terraform apply          #this will take 10-20 minutes.  Once all the instances come up, the load balancer needs to detect back end servers.
 
+[Screen shot of successful terraform apply](https://github.com/wildahunden/saltdemo/blob/master/screenShots/ScreenShot1-TerraformApply.png)
+
 You will see a list of server names and IP addresses displayed when the provisioning is complete.  At this point, this is a
 fully-functional, load-balanced web site running apache in Oracle Cloud Infrastructure (OCI).  The web site page is a place-
 holder.
