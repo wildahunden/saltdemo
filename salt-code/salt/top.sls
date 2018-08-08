@@ -3,7 +3,7 @@ base:
     - common
     - ssh
     - users
-  'webserver*'
+  'webserver*':
     - httpd
-  'minion*'
+  'minion*':
     - nginx
