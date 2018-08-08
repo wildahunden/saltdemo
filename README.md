@@ -70,16 +70,16 @@ terraform destroy    # To save money, destroy the resources on oci until you com
 ## File layout
 ### /oci
 This directory has all the code necessary to provision the resources in OCI.  The scripts create:
-*Virtual Cloud Network (VCN)
-*Internet Gateway (IGW)
-*Four subnets
-*Two security lists (used by the subnets)
-*Two route tables (used by the subnets)
-*Load balancer (with 2 instances in different subnets)
-*Listener (used by the load balancer)
-*Back end set (used by the load balancer) with health check
-*Two backend objects to assign compute instances to the load balancer
-*Five compute instances (salt master, two salt minions for testing, two web servers)
+* Virtual Cloud Network (VCN)
+* Internet Gateway (IGW)
+* Four subnets
+* Two security lists (used by the subnets)
+* Two route tables (used by the subnets)
+* Load balancer (with 2 instances in different subnets)
+* Listener (used by the load balancer)
+* Back end set (used by the load balancer) with health check
+* Two backend objects to assign compute instances to the load balancer
+* Five compute instances (salt master, two salt minions for testing, two web servers)
 
 ### /salt-code
 This directory stores the code necessary for the salt stack deployment of a very simple web page for the web servers 
@@ -92,7 +92,12 @@ of bringing this site up.
 ## Deployment
 You will need to manually create a compartment in OCI and update the credentials file (e.g., ~/.terraform_oci) with the ocid.
 You will also need to create a user and add a public key to the user.  That user will be used by terraform to provision 
-resources.
+resources.  Once you have the credentials setup and the compartment, you can do the following to bring the site up.
+cd ./oci
+source ~/.terraform_oci  #export shell variables terraform will use
+terraform init
+terraform apply          #this will take 10-20 minutes.  Once all the instances come up, the load balancer needs to detect back end servers.
+You will see a list of server names and IP addresses.  These are the servers you will need to work with.
 
 ## Built With
 Homebrew - https://brew.sh/
