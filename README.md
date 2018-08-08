@@ -86,6 +86,7 @@ Look in the source code for "LessonsLearned" to see the areas which presented is
 of bringing this site up.
 
 ## Deployment
+### OCI Provisioning
 You will need to manually create a compartment in OCI and update the credentials file (e.g., ~/.terraform_oci) with the ocid.
 You will also need to create a user and add a public key to the user.  That user will be used by terraform to provision 
 resources.  Once you have the credentials setup and the compartment, you can do the following to bring the site up.
@@ -93,7 +94,47 @@ resources.  Once you have the credentials setup and the compartment, you can do 
 * source ~/.terraform_oci  #export shell variables terraform will use
 * terraform init
 * terraform apply          #this will take 10-20 minutes.  Once all the instances come up, the load balancer needs to detect back end servers.
-You will see a list of server names and IP addresses.  These are the servers you will need to work with.
+
+You will see a list of server names and IP addresses displayed when the provisioning is complete.  At this point, this is a
+fully-functional, load-balanced web site running apache in Oracle Cloud Infrastructure (OCI).  The web site page is a place-
+holder.
+
+The IP addresses displayed includes "site_public_ipaddress" which is the public address for the site.  Put that IP address in
+the address of your favorite browser to see the web page which displays, "This is a place holder index.html page."  The next 
+step is to deploy the web page with salt stack.
+
+### Salt Stack Deployment
+While all of the salt servers have been provisioned and salt-minion has been installed on the web servers, there are still 
+a couple of manual steps that need to be completed. 
+
+* ssh to the salt master server (see the IP address displayed or look in terraform.tfstate file) (ssh opc@IPaddress -i /path/to/privatekey)
+* sudo su -
+* #Start the salt-master process and ensure it has the latest code
+* cd /top/saltdemp/salt-code
+* ./salt_sync.sh
+* #add the web server salt-minion keys to the list of accepted keys
+* salt-key -L  #you should see the two web server name in the list of keys not accepted.
+* salt-key --accept-all   
+* salt 'webserver*' state.highstate test=True
+* #If that completed okay, run it again w/o the "test=True" to actually apply the changes.
+* #If that completed okay, you can refresh your browser to see the new page with displays the webserver name & info.
+* #Notice that the webserver changes names when you refresh the page indicating that the load balancer is working.
+
+* Debugging
+* ## If you destroy and re-provision with terraform, you'll need to clean up the keys
+* ssh to the salt master
+* sudo su -
+* salt-key --delete-all
+*
+* # on each of the web servers, restart the salt-minion service
+* ssh to the webserver(s)
+* sudo su -
+* systemctl restart salt-minion; systemctl status salt-minion
+*
+* #Back on the master server as root
+* salt-key -L
+* salt-key --accept-all
+* salt 'webserver*' state.highstate test=True   #as before and run again w/o test=True to apply the changes
 
 ## Built With
 Homebrew - https://brew.sh/
@@ -101,6 +142,10 @@ Homebrew - https://brew.sh/
 OCI - http://cloud.oracle.com/tryit
 
 Terraform - https://terraform.io
+
+Cloud-init - https://cloudinit.readthedocs.io/en/latest/
+
+Salt Stack - https://saltstack.com/
 
 ## Author
 Daniel Williams
