@@ -1,3 +1,4 @@
+#This file controls the list of values displayed at the end of the terraform apply.
 output "saltdemo-ws1" {
   value = "${oci_core_instance.saltdemo-ws1.public_ip}"
 }

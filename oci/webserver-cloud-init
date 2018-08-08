@@ -27,12 +27,10 @@ runcmd:
  - [ sh, -xc, "firewall-offline-cmd --permanent --add-port=443/tcp" ]
  - [ sh, -xc, "systemctl enable httpd.service" ]
  - [ sh, -xc, "systemctl start httpd.service" ]
-#Move configuration to salt. 
+ # LessonsLearned:  If /var/www/html/index.html doesn't exist, apache returns a nice page a long with a 403 status code.  The 403 causes the load balancer to think the sites are down.
+ #                  Put in a place holder so the load balancer will pick up the servers as functional
  - [ sh, -xc, "echo '<html><head></head><body><pre><code>Default Apache index.html</code></pre></body></html>' > /var/www/html/index.html" ]
-# - [ sh, -xc, "hostname >> /var/www/html/index.html" ]
-# - [ sh, -xc, "echo '' >> /var/www/html/index.html" ]
-# - [ sh, -xc, "cat /etc/os-release >> /var/www/html/index.html" ]
-# - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
+ # Setting up the salt-minion software to work with the master.
  - [ sh, -xc, "ipaddress=`getent hosts saltmaster.saltdemosnlb1.saltdemovcn.oraclevcn.com`; ipaddress=`echo $ipaddress | awk '{print $1}'`; echo $ipaddress; sed -i -e \"s/#master: salt/master: $ipaddress/\" /etc/salt/minion" ]
  - [ sh, -xc, "echo \"id: `hostname -s`\" >> /etc/salt/minion" ]
  - [ sh, -xc, "systemctl start salt-minion.service" ]

@@ -42,6 +42,7 @@ resource "oci_core_route_table" "saltdemo-lb-RT" {
   display_name   = "saltdemo-lb-RT"
 
   route_rules {
+    # LessonsLearned:  You have to specify a route out of the network for yum to work.  For the demo, allowed world access.
     destination        = "0.0.0.0/0"
     network_entity_id = "${oci_core_internet_gateway.saltdemo-IGW.id}"
   }
@@ -66,6 +67,7 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
 
   egress_security_rules = [
     {
+      # LessonsLearned:  In addition to the route out to the world, you have to add it to the security egress rules.
       destination = "0.0.0.0/0"
       protocol    = "6"
     }
@@ -73,6 +75,7 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
   ingress_security_rules = [
     #The security list for the webservers needs to allow traffice from the load balancer subnets
     {
+      # allow ssh access to the servers.
       source = "0.0.0.0/0"
       protocol = 6
       stateless = false
@@ -82,6 +85,7 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
       }
     },
     {
+      # following rules created when the security list is made in the interface.
       source = "0.0.0.0/0"
       protocol = 1
       icmp_options {
@@ -90,6 +94,9 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
       }
     },
     {
+      # The salt master and load balancer have to commuinicate with the webserver.  Need to allow access.
+      # LessonsLearned: The servers in a subnet cannot communicate with other servers in the same subnet unless
+      #                 Ingress rule is specified to allow ingress from the same subnet.  
       source = "10.0.0.0/24"
       protocol = 1
       icmp_options {
@@ -121,6 +128,7 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
       }
     },
     {
+      # Default ports for salt are 4505-6.  Need to allow ingress on those ports.
       source = "10.0.2.0/24"
       protocol = 6
       tcp_options {

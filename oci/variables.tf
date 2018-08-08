@@ -1,4 +1,4 @@
-
+#These variables are pulled from the export commands in ../.terraform_oci
 variable "tenancy_ocid" {}
 variable "user_ocid" {}
 variable "fingerprint" {}
