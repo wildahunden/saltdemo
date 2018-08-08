@@ -8,7 +8,7 @@ httpd:
 "echo '<html><head></head><body><pre><code>' > /var/www/html/index.html":
   cmd.run
 
-'hostname >> /var/www/html/index.html':
+'hostname -f >> /var/www/html/index.html':
   cmd.run
 
 "echo '' >> /var/www/html/index.html":
