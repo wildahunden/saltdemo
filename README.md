@@ -100,7 +100,7 @@ fully-functional, load-balanced web site running apache in Oracle Cloud Infrastr
 holder.
 
 The IP addresses displayed includes "site_public_ipaddress" which is the public address for the site.  Put that IP address in
-the address of your favorite browser to see the web page which displays, "This is a place holder index.html page."  The next 
+the address of your favorite browser to see the web page which displays, "Default Apache index.html."  The next 
 step is to deploy the web page with salt stack.
 
 ### Salt Stack Deployment
