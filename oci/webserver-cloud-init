@@ -1,5 +1,12 @@
 #cloud-config
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
+yum_repos:
+  saltstack:
+    name:      SaltStack repo for Red Hat Enterprise Linux $releasever
+    baseurl:   https://repo.saltstack.com/yum/redhat/$releasever/$basearch/latest
+    enabled:   1
+    gpgcheck:  true
+    gpgkey:    https://repo.saltstack.com/yum/redhat/$releasever/$basearch/latest/SALTSTACK-GPG-KEY.pub
 packages:
  - httpd
  - figlet
@@ -8,7 +15,11 @@ packages:
  - git
  - tmux
  - wget
+ - salt-minion
+ - salt-cloud
+ - salt-doc
  - unzip
+ - nmap
 runcmd:
  - [ sh, -xc, "systemctl disable firewalld.service" ]
  - [ sh, -xc, "systemctl stop firewalld.service" ]
@@ -16,8 +27,12 @@ runcmd:
  - [ sh, -xc, "firewall-offline-cmd --permanent --add-port=443/tcp" ]
  - [ sh, -xc, "systemctl enable httpd.service" ]
  - [ sh, -xc, "systemctl start httpd.service" ]
- - [ sh, -xc, "echo '<html><head></head><body><pre><code>' > /var/www/html/index.html" ]
- - [ sh, -xc, "hostname >> /var/www/html/index.html" ]
- - [ sh, -xc, "echo '' >> /var/www/html/index.html" ]
- - [ sh, -xc, "cat /etc/os-release >> /var/www/html/index.html" ]
- - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
+#Move configuration to salt. 
+ - [ sh, -xc, "echo '<html><head></head><body><pre><code>Default Apache index.html</code></pre></body></html>' > /var/www/html/index.html" ]
+# - [ sh, -xc, "hostname >> /var/www/html/index.html" ]
+# - [ sh, -xc, "echo '' >> /var/www/html/index.html" ]
+# - [ sh, -xc, "cat /etc/os-release >> /var/www/html/index.html" ]
+# - [ sh, -xc, "echo '</code></pre></body></html>' >> /var/www/html/index.html" ]
+ - [ sh, -xc, "ipaddress=`getent hosts saltmaster.saltdemosnlb1.saltdemovcn.oraclevcn.com`; ipaddress=`echo $ipaddress | awk '{print $1}'`; echo $ipaddress; sed -i -e \"s/#master: salt/master: $ipaddress/\" /etc/salt/minion" ]
+ - [ sh, -xc, "echo \"id: `hostname -s`\" >> /etc/salt/minion" ]
+ - [ sh, -xc, "systemctl start salt-minion.service" ]

@@ -90,10 +90,26 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
       }
     },
     {
-      source = "10.0.0.0/16"
+      source = "10.0.0.0/24"
       protocol = 1
       icmp_options {
         "type" = 3
+      }
+    },
+    {
+      source = "10.0.0.0/24"
+      protocol = 6
+      tcp_options {
+        "min" = 80
+        "max" = 80
+      }
+    },
+    {
+      source = "10.0.1.0/24"
+      protocol = 6
+      tcp_options {
+        "min" = 80
+        "max" = 80
       }
     },
     {
@@ -102,6 +118,14 @@ resource "oci_core_security_list" "saltdemo-ws-LIST" {
       tcp_options {
         "min" = 80
         "max" = 80
+      }
+    },
+    {
+      source = "10.0.2.0/24"
+      protocol = 6
+      tcp_options {
+        "min" = 4505
+        "max" = 4506
       }
     },
 
@@ -146,6 +170,24 @@ resource "oci_core_security_list" "saltdemo-lb-LIST" {
 
   ingress_security_rules = [
     #The security list for the load balancers need to allow traffic on 4505-4506 to allow salt to work
+    {
+      source = "10.0.0.0/24"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 4505
+        "max" = 4506
+      }
+    },
+    {
+      source = "10.0.1.0/24"
+      protocol = 6
+      stateless = false
+      tcp_options {
+        "min" = 4505
+        "max" = 4506
+      }
+    },
     {
       source = "10.0.2.0/24"
       protocol = 6

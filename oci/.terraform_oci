@@ -1,0 +1,8 @@
+export TF_VAR_tenancy_ocid="ocidOfTheTenancy"
+export TF_VAR_user_ocid="ocidOfTheUser"
+export TF_VAR_fingerprint="seeReadMeForInstruction"
+export TF_VAR_private_key_path="pathToPrivateKey"
+export TF_VAR_public_key_path="pathToPublicKey"
+export TF_VAR_compartment_ocid="ocidOfTheCompartment"
+export TF_VAR_region="us-ashburn-1"
+#export TF_LOG=trace
