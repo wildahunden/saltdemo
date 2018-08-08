@@ -13,6 +13,6 @@ output "saltdemo-salt-minion01" {
 output "saltdemo-salt-minion02" {
   value = "${oci_core_instance.saltdemo-salt-minion02.public_ip}"
 }
-#output "saltdemo-lb1" {
-#  value = "${oci_load_balancer.saltdemo-lb1.ip_address}"
-#}
+output "site_public_ipaddress" {
+  value = "${oci_load_balancer.saltdemo-lb1.ip_addresses}"
+}
